@@ -737,7 +737,7 @@ function eduGroups(){var m={};taps.forEach(function(t){if(t.kind!=='edu'||!t.grp
  return Object.keys(m).map(function(k){var g=m[k],e=egs[k]||{};g.out=e.out||0;return g}).sort(function(a,b){return a.at-b.at})}
 function eduPlan(n){var act=eduGroups().filter(function(g){return !g.out}),held={};act.forEach(function(g){g.seats.forEach(function(q){held[q]=1})});
  var join=(n===1&&act.length)?act[act.length-1]:null,grp=join?join.id:'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),pool=join?join.pool:(act.some(function(g){return g.pool==='p'})?'s':'p');
- var order=pool==='p'?PRI.concat(SEC):SEC,got=[];for(var i=0;i<order.length&&got.length<n;i++){if(!held[order[i]])got.push(order[i])}
+ var order=PRI.concat(SEC),got=[];for(var i=0;i<order.length&&got.length<n;i++){if(!held[order[i]])got.push(order[i])}
  return{grp:grp,pool:pool,seats:got,over:n-got.length}}
 function hm(ms){return new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
 function renderEdu(){var gs=eduGroups(),act=gs.filter(function(g){return !g.out}),left=gs.filter(function(g){return g.out}),mark={};
