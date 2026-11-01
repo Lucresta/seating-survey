@@ -1,0 +1,110 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light dark;box-sizing:border-box}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<style>
+.appbar{position:sticky;top:0;z-index:20;margin-bottom:16px;border:1px solid var(--line,#c9c1b2);border-radius:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 14px;background:var(--panel,#fff);color:var(--ink,#1c1a16);font:600 14px "Source Sans 3","Segoe UI",system-ui,sans-serif}
+.appbar a{color:var(--ink,#1c1a16);text-decoration:underline;text-underline-offset:3px;font-weight:700}
+.appbar .sp{flex:1}
+.appbar select,.appbar button{font:inherit;color:var(--ink,#1c1a16);background:var(--panel,#fff);border:1px solid var(--line,#c9c1b2);border-radius:6px;padding:5px 9px;cursor:pointer}
+.appbar select:focus-visible,.appbar button:focus-visible,.appbar a:focus-visible{outline:2px solid var(--accent,#1f5c3a);outline-offset:2px}
+.appbar .brand{font-weight:600;color:var(--ink-soft,#5b564c)}
+@media print{.appbar{display:none}}
+</style><nav class="appbar" aria-label="Survey navigation"><a href="../">&#9666; Gallery index</a><span class="sp"></span><label>Go to <select id="appGo" aria-label="Go to area"><option value="../">Gallery index</option><option value="../plans/press-gallery.html">Press Gallery</option><option value="../plans/public-gallery.html">Public Gallery</option><option value="../plans/special-gallery-centre.html">Special Gallery Centre (Behind the Screen)</option><option value="../plans/special-gallery-east.html">Special Gallery East</option><option value="../plans/special-gallery-west.html">Special Gallery West</option><option value="../plans/officials-box.html">Officials Box</option><option value="../plans/undergallery.html">Undergallery</option><option value="../plans/aoo-activity.html" selected>AOO activity feed</option></select></label><button type="button" id="appTheme" aria-label="Change colour theme">Theme: auto</button></nav><script>(function(){var r=document.documentElement,b=document.getElementById('appTheme'),g=document.getElementById('appGo'),m=['auto','light','dark'],i=0;
+function set(v){i=m.indexOf(v);if(i<0)i=0;if(v==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',v);b.textContent='Theme: '+v;}
+try{set(localStorage.getItem('hocTheme')||'auto');}catch(e){set('auto');}
+b.addEventListener('click',function(){i=(i+1)%3;set(m[i]);try{localStorage.setItem('hocTheme',m[i]);}catch(e){}});
+g.addEventListener('change',function(){location.href=g.value;});})();</script>
+
+<title>AOO Activity Feed</title>
+<style>
+:root{--bg:#faf8f4;--panel:#fff;--ink:#1c1a16;--ink-soft:#5b564c;--line:#c9c1b2;--accent:#006443;--gold:#f3ead0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17130f;--panel:#211c16;--ink:#f1ece1;--ink-soft:#b9b0a0;--line:#4a4335;--accent:#7fd6ae;--gold:#362c1a}}
+:root[data-theme="dark"]{--bg:#17130f;--panel:#211c16;--ink:#f1ece1;--ink-soft:#b9b0a0;--line:#4a4335;--accent:#7fd6ae;--gold:#362c1a}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Source Sans 3","Segoe UI",system-ui,sans-serif;margin:0;padding:20px 16px 40px}
+main{max-width:1000px;margin:0 auto}
+h1{font:600 clamp(24px,4vw,32px)/1.15 Fraunces,Georgia,serif;margin:4px 0 6px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+p.sub{color:var(--ink-soft);max-width:70ch;margin:0 0 14px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:12px 0}
+label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--ink-soft);font-weight:600}
+input,select,button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 9px}
+button{cursor:pointer;font-weight:600}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tiles{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.tile{flex:1 1 130px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;text-align:left}
+.tile b{display:block;font-size:24px;font-variant-numeric:tabular-nums}.tile span{font-size:13px;color:var(--ink-soft)}
+.tile.on{border-color:var(--accent);outline:2px solid var(--accent)}
+.msg{background:var(--gold);border:1px solid var(--line);border-left:3px solid #9c7a2e;border-radius:4px;padding:9px 12px;font-size:14px;margin:10px 0}
+.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft)}td.t{white-space:nowrap;font-variant-numeric:tabular-nums}
+</style>
+<main>
+<div class="eyebrow">Admissions Order Office</div>
+<h1>Activity feed</h1>
+<p class="sub">Every assignment, change, arrival, departure, headcount and ticket count from all galleries for one sitting, newest first, updating as it happens. Select a gallery tile to filter.</p>
+<div id="st" class="msg" hidden></div>
+<div class="bar"><label for="dt">Sitting date<input type="date" id="dt"></label>
+<label for="q">Search<input type="search" id="q" placeholder="Name, seat or event"></label>
+<button type="button" id="all">Show all galleries</button><button type="button" id="xl">Export Excel</button></div>
+<div class="tiles" id="tiles"></div>
+<div class="wrap"><table><thead><tr><th>Time</th><th>Gallery</th><th>Seat</th><th>What happened</th><th>Detail</th></tr></thead><tbody id="rows"></tbody></table></div>
+<p class="sub" style="margin-top:12px" id="cnt"></p>
+</main>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+var date=todayStr(),db=null,dl=null,subs=[],src={},filt='',qq='';
+$('dt').value=date;
+var G=['Press','Public','Centre','East','West','Officials Box','Undergallery'];
+var ACT={assign:'Seat assigned',edit:'Details edited',clear:'Seat cleared',status:'Status changed',restore:'Assignment restored',replace:'Replaced',handover:'Handed over'};
+function who(o){return o?(o.guest||o.lead||''):''}
+function hist(g,path){return {path:path+'/'+date+'/events',map:function(e){var a=e.after,b=e.before,act=ACT[e.action]||(e.action||'Change');var d=who(a)||who(b);var x=[];if(a&&a.org)x.push(a.org);if(a&&a.iss)x.push('issued by '+a.iss);if(a&&a.status&&e.action==='status')x.push(a.status);return [{at:e.at,g:g,seat:e.seat||'',w:act,d:(d?d+(x.length?' · '+x.join(' · '):''):x.join(' · '))}]}}}
+function vis(g,path){return {path:path+'/'+date+'/visits',map:function(v){if(!v.out)return [];var m=Math.max(0,Math.round((v.out-(v.inAt||v.out))/60000));return [{at:v.out,g:g,seat:v.seat||'',w:'Left the gallery',d:(v.guest||'')+(v.inAt?' · in '+m+' min':'')}]}}}
+function buildS(){return {
+ 'Press h':hist('Press','history'),'Press v':vis('Press','press-visits'),
+ 'Public h':hist('Public','public-saa-history'),
+ 'Public taps':{path:'public-visits/'+date+'/taps',map:function(t){var K={ovs:'overseas',edu:'education',dom:'domestic'};return [{at:t.at,g:'Public',seat:'',w:'Tickets counted',d:(t.n||1)+' '+(K[t.kind]||'domestic')}]}},
+ 'Public counts':{path:'public-visits/'+date+'/counts',map:function(c){return [{at:c.at,g:'Public',seat:'',w:'Headcount recorded',d:c.n+' in the gallery'}]}},
+ 'Public acc':{path:'public-visits/'+date+'/accvisits',map:function(v){var o=[{at:v.at,g:'Public',seat:v.seat||'',w:'Accessible space taken',d:''}];if(v.out)o.push({at:v.out,g:'Public',seat:v.seat||'',w:'Accessible space freed',d:Math.max(0,Math.round((v.out-v.at)/60000))+' min'});return o}},
+ 'Centre h':hist('Centre','special-centre-history'),'Centre v':vis('Centre','special-centre-visits'),
+ 'Centre cpa':{path:'special-centre/'+date+'/cpagroups',map:function(d){var t=d.arrivedAt||d.at0||0;return t?[{at:t,g:'Centre',seat:d.seats||'',w:'CPA group arrived',d:'Group of '+(d.size||'?')+(d.note?' ('+d.note+')':'')}]:[]}},
+ 'East h':hist('East','special-east-history'),'East v':vis('East','special-east-visits'),
+ 'East peers':{path:'special-east-history/'+date+'/peers',map:function(v){var mp=+v.seat>=16&&+v.seat<=25,w=mp?'MP':'Peer',o=[{at:v.at,g:'East',seat:v.seat||'',w:w+' seat taken',d:''}];if(v.out)o.push({at:v.out,g:'East',seat:v.seat||'',w:w+' seat freed',d:Math.max(0,Math.round((v.out-v.at)/60000))+' min'});return o}},
+ 'West h':hist('West','special-west-history'),'West v':vis('West','special-west-visits'),
+ 'West dg':{path:'special-west/'+date+'/delegations',map:function(d){var o=[];if(d.arrivedAt)o.push({at:d.arrivedAt,g:'West',seat:d.seats||'',w:'Speaker’s Gallery party arrived',d:(d.lead||'')+' · '+(d.size||'?')+' guests'});if(d.status==='Cancelled'&&d.at)o.push({at:d.at,g:'West',seat:d.seats||'',w:'Speaker’s Gallery party released',d:(d.lead||'')+' · '+(d.size||'?')+' guests'});return o}},
+ 'OB h':hist('Officials Box','special-ob-history'),'OB v':vis('Officials Box','special-ob-visits'),
+ 'UG h':hist('Undergallery','special-ug-history'),'UG v':vis('Undergallery','special-ug-visits')
+}}
+var S=buildS();
+var NM={},TRIED={},user=null;
+function nm(id){return id?(NM[id]||'Unnamed user'):'Not recorded'}
+function resolve(ids){if(!user||!ids.length)return;user.profiles(ids).then(function(p){var ch=false;ids.forEach(function(i){var n=(p&&p[i]&&p[i].name)||'';if(n&&NM[i]!==n){NM[i]=n;ch=true}});if(ch)render()}).catch(function(){})}
+function st(m){var s=$('st');if(m){s.textContent=m;s.hidden=false}else s.hidden=true}
+function fmt(ms){return new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+function items(){var a=[];Object.keys(src).forEach(function(k){a=a.concat(src[k])});return a.filter(function(i){return i.at}).sort(function(x,y){return y.at-x.at})}
+function render(){var all=items(),cnt={};var need=[];all.forEach(function(i){if(i.by&&!NM[i.by]&&need.indexOf(i.by)<0&&!TRIED[i.by]){TRIED[i.by]=1;need.push(i.by)}});resolve(need);G.forEach(function(g){cnt[g]=0});all.forEach(function(i){cnt[i.g]=(cnt[i.g]||0)+1});
+ var tl=$('tiles');tl.textContent='';G.forEach(function(g){var b=document.createElement('button');b.type='button';b.className='tile'+(filt===g?' on':'');b.innerHTML='<b></b><span></span>';b.firstChild.textContent=cnt[g];b.lastChild.textContent=g;b.addEventListener('click',function(){filt=filt===g?'':g;render()});tl.appendChild(b)});
+ var q=qq.toLowerCase(),sh=all.filter(function(i){return (!filt||i.g===filt)&&(!q||(i.g+' '+i.seat+' '+i.w+' '+i.d+' '+nm(i.by)).toLowerCase().indexOf(q)>=0)});
+ var tb=$('rows');tb.textContent='';sh.forEach(function(i){var tr=document.createElement('tr');[fmt(i.at),i.g,i.seat,i.w,i.d,nm(i.by)].forEach(function(t,n){var c=document.createElement('td');if(n===0)c.className='t';c.textContent=t;tr.appendChild(c)});tb.appendChild(tr)});
+ if(!sh.length){var tr=document.createElement('tr'),c=document.createElement('td');c.colSpan=5;c.textContent=all.length?'Nothing matches this filter.':'No activity recorded yet for this sitting.';tr.appendChild(c);tb.appendChild(tr)}
+ $('cnt').textContent='Showing '+sh.length+' of '+all.length+' events for '+new Date(date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'.'}
+function sub(){subs.forEach(function(u){u()});subs=[];src={};render();if(!db)return;
+ Object.keys(S).forEach(function(k){var c=S[k];
+  subs.push(db.collection(c.path).onSnapshot(function(s){var a=[];s.docs.forEach(function(x){try{var dd=x.data()||{};c.map(dd).forEach(function(r){if(r.by==null)r.by=dd.by||'';a.push(r)})}catch(e){}});src[k]=a;render()},function(){}))})}
+$('dt').addEventListener('change',function(e){var v=e.target.value;if(!/^\d{4}-\d\d-\d\d$/.test(v)){e.target.value=date;return}date=v;S=buildS();sub()});
+$('q').addEventListener('input',function(e){qq=e.target.value;render()});
+$('all').addEventListener('click',function(){filt='';qq='';$('q').value='';render()});
+var XLNS=function(y,m,d){return Math.round(Date.UTC(y,m,d)/86400000)+25569};
+$('xl').addEventListener('click',function(){
+ if(!dl){st('Export is not available in this view.');return}if(typeof XLSX==='undefined'){st('The Excel export could not load. Check your connection and try again.');return}
+ var all=items().slice().reverse(),cnt={};all.forEach(function(i){cnt[i.g]=(cnt[i.g]||0)+1});
+ function sheet(rows){var ws={},w=[];rows.forEach(function(r,ri){r.forEach(function(v,ci){if(v===''||v==null)return;var c=typeof v==='number'?{t:'n',v:v}:{t:'s',v:String(v)};if(ri>0&&v instanceof Date){c={t:'n',v:XLNS(v.getFullYear(),v.getMonth(),v.getDate())+(v.getHours()*3600+v.getMinutes()*60+v.getSeconds())/86400,z:'dd/mm/yyyy hh:mm:ss'}}ws[XLSX.utils.encode_cell({r:ri,c:ci})]=c;w[ci]=Math.max(w[ci]||8,Math.min((v instanceof Date?19:String(v).length)+2,60))})});ws['!ref']=XLSX.utils.encode_range({s:{r:0,c:0},e:{r:rows.length-1,c:rows[0].length-1}});ws['!cols']=w.map(function(x){return{wch:x}});ws['!autofilter']={ref:ws['!ref']};return ws}
+ var act=[['Sitting date','Date and time','Gallery','Seat','What happened','Detail','By']].concat(all.map(function(i){return [date,new Date(i.at),i.g,i.seat,i.w,i.d,nm(i.by)]}));
+ var by=[['Sitting date','Gallery','Events']].concat(G.map(function(g){return [date,g,cnt[g]||0]}));
+ var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,sheet(by),'By gallery');XLSX.utils.book_append_sheet(wb,sheet(act),'Activity');
+ var out=XLSX.write(wb,{bookType:'xlsx',type:'array'});dl.save({filename:'aoo-activity-'+date+'.xlsx',data:new Uint8Array(out)}).catch(function(){})});
+render();
+Promise.all([claude.use('db'),claude.use('downloads'),claude.use('user')]).then(function(r){db=r[0];dl=r[1];user=r[2];if(!db){st('The shared log is not available in this view. Open the page signed in with edit access.');return}sub()}).catch(function(){st('The shared log could not be loaded.')});
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body></html>
