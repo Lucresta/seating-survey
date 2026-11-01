@@ -12,6 +12,7 @@ function set(v){i=m.indexOf(v);if(i<0)i=0;if(v==='auto')r.removeAttribute('data-
 try{set(localStorage.getItem('hocTheme')||'auto');}catch(e){set('auto');}
 b.addEventListener('click',function(){i=(i+1)%3;set(m[i]);try{localStorage.setItem('hocTheme',m[i]);}catch(e){}});
 g.addEventListener('change',function(){location.href=g.value;});})();</script>
+<script src="../demo-shim.js"></script>
 <title>Press Gallery</title>
 <style>
   :root {
@@ -1027,7 +1028,7 @@ $('aoo-all').addEventListener('click',function(){var b=$('aoo-all'),ids=Object.k
 });
 setInterval(function(){if(!picked&&todayStr()!==date){date=todayStr();$('aoo-date').value=date;closeDlg();sub()}},30000);
 render();
-Promise.all([claude.use('db'),claude.use('user'),claude.use('downloads')]).then(function(r){
+Promise.all([house.use('db'),house.use('user'),house.use('downloads')]).then(function(r){
  db=r[0];usr=r[1];dl=r[2];
  if(!db){st('The shared log is not available in this view, so seats cannot be assigned. Open the page signed in with edit access.');render();return}
  (usr&&usr.id?usr.id():Promise.resolve('')).then(function(i){myId=i||''}).catch(function(){}).then(function(){subLists();sub()});

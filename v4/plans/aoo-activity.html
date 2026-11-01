@@ -13,6 +13,7 @@ try{set(localStorage.getItem('hocTheme')||'auto');}catch(e){set('auto');}
 b.addEventListener('click',function(){i=(i+1)%3;set(m[i]);try{localStorage.setItem('hocTheme',m[i]);}catch(e){}});
 g.addEventListener('change',function(){location.href=g.value;});})();</script>
 
+<script src="../demo-shim.js"></script>
 <title>AOO Activity Feed</title>
 <style>
 :root{--bg:#faf8f4;--panel:#fff;--ink:#1c1a16;--ink-soft:#5b564c;--line:#c9c1b2;--accent:#006443;--gold:#f3ead0}
@@ -103,7 +104,7 @@ $('xl').addEventListener('click',function(){
  var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,sheet(by),'By gallery');XLSX.utils.book_append_sheet(wb,sheet(act),'Activity');
  var out=XLSX.write(wb,{bookType:'xlsx',type:'array'});dl.save({filename:'aoo-activity-'+date+'.xlsx',data:new Uint8Array(out)}).catch(function(){})});
 render();
-Promise.all([claude.use('db'),claude.use('downloads'),claude.use('user')]).then(function(r){db=r[0];dl=r[1];user=r[2];if(!db){st('The shared log is not available in this view. Open the page signed in with edit access.');return}sub()}).catch(function(){st('The shared log could not be loaded.')});
+Promise.all([house.use('db'),house.use('downloads'),house.use('user')]).then(function(r){db=r[0];dl=r[1];user=r[2];if(!db){st('The shared log is not available in this view. Open the page signed in with edit access.');return}sub()}).catch(function(){st('The shared log could not be loaded.')});
 })();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

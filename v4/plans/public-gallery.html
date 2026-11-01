@@ -12,6 +12,7 @@ function set(v){i=m.indexOf(v);if(i<0)i=0;if(v==='auto')r.removeAttribute('data-
 try{set(localStorage.getItem('hocTheme')||'auto');}catch(e){set('auto');}
 b.addEventListener('click',function(){i=(i+1)%3;set(m[i]);try{localStorage.setItem('hocTheme',m[i]);}catch(e){}});
 g.addEventListener('change',function(){location.href=g.value;});})();</script>
+<script src="../demo-shim.js"></script>
 <title>Public Gallery</title>
 <style>
   :root {
@@ -645,6 +646,16 @@ svg .acc-label.vis-ico{fill:#fff!important}svg .wheelchair-icon-fill.vis-ico{fil
 #vis th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
 #vis .peak td{font-weight:700;background:var(--accent-soft)}
 #vis .note{font-size:13px;color:var(--ink-soft);max-width:70ch;margin-top:8px}
+#vis .edug{margin:14px 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid #12808a;border-radius:6px;background:var(--panel);max-width:760px}
+#vis .edug h3{margin:0 0 6px;font-size:15px}
+#vis .edug .gr{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:7px 0;border-top:1px solid var(--line-soft);font-size:14.5px}
+#vis .edug .gr:first-of-type{border-top:0}
+#vis .edug .sw{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+#vis .edug .w{font-size:13.5px;color:#8a4b00}
+#vis .edug .sm{margin-left:auto}
+#vis .edug .sum{font-size:13px;color:var(--ink-soft);margin-top:6px}
+svg g.seat.edu-g1 rect{fill:#12808a;stroke:#0b5a62}svg g.seat.edu-g1 text{fill:#fff}
+svg g.seat.edu-g2 rect{fill:#7a3fa0;stroke:#552b73}svg g.seat.edu-g2 text{fill:#fff}
 </style>
 <section id="vis" aria-label="Visitor tally">
 <div class="accbn" aria-live="polite" style="border-radius:6px;padding:10px 14px;margin:10px 0;font-weight:600;border:1px solid #9c7a2e;background:#f3ead0;color:#1c1a16">Accessible spaces: checking&hellip;</div>
@@ -662,6 +673,7 @@ svg .acc-label.vis-ico{fill:#fff!important}svg .wheelchair-icon-fill.vis-ico{fil
 <label for="vis-edun"><span id="vis-edut">Number of visitors</span><input type="number" inputmode="numeric" min="1" max="200" id="vis-edun" placeholder="e.g. 7"></label>
 <button type="button" class="sm go" id="vis-edua">Add</button><button type="button" class="sm" id="vis-edux">Cancel</button>
 </div>
+<div class="edug" id="vis-edug" aria-live="polite"></div>
 <div class="bar">
 <button type="button" class="sm" id="vis-undo">Undo last tap</button>
 <label>Sitting date<input type="date" id="vis-date"></label>
@@ -684,11 +696,11 @@ svg .acc-label.vis-ico{fill:#fff!important}svg .wheelchair-icon-fill.vis-ico{fil
 <div class="tile"><b id="vis-pk">&ndash;</b><span>Busiest hour</span></div>
 </div>
 <div class="wrap"><table><thead><tr><th>Hour</th><th>Domestic</th><th>Overseas</th><th>Education</th><th>Total</th></tr></thead><tbody id="vis-rows"></tbody></table></div>
-<p class="note">Tickets counted are visitors admitted, not people in the gallery at one time, because visitors come and go. The headcount is what shows how full the gallery was. Groups are entered once, using the size tapped. Until 3pm ordinary visitors use seats 1&ndash;123 and education groups use seats 124&ndash;150 (27 seats). From 3pm all 150 seats are open to everyone. Each percentage is measured against the seats available in that period, using the time of each tap. The five accessible seats (Acc1&ndash;Acc5) can be marked occupied or free by selecting them on the plan.</p>
+<p class="note">Tickets counted are visitors admitted, not people in the gallery at one time, because visitors come and go. The headcount is what shows how full the gallery was. Groups are entered once, using the size tapped, and an education group is marked on the plan: it fills seats 130&ndash;144 first, then 124&ndash;129 and 145&ndash;150, and a second group at the same time uses 97&ndash;102, 70&ndash;75, 118&ndash;123 and 91&ndash;96. Until 3pm ordinary visitors use seats 1&ndash;123 and education groups use seats 124&ndash;150 (27 seats). From 3pm all 150 seats are open to everyone. Each percentage is measured against the seats available in that period, using the time of each tap. The five accessible seats (Acc1&ndash;Acc5) can be marked occupied or free by selecting them on the plan.</p>
 </section>
 <script id="vis-js">
 (function(){
-var taps=[],hcs=[],unsubH=null,avis=[],unsubAV=null,shist=[],unsubSH=null,sseats=[],unsubSS=null,accs={},db=null,usr=null,dl=null,myId='',unsubT=null,unsubA=null,SVG='http://www.w3.org/2000/svg',seats={};
+var taps=[],hcs=[],unsubH=null,avis=[],unsubAV=null,shist=[],unsubSH=null,sseats=[],unsubSS=null,accs={},egs={},unsubEG=null,db=null,usr=null,dl=null,myId='',unsubT=null,unsubA=null,SVG='http://www.w3.org/2000/svg',seats={};
 var $=function(i){return document.getElementById(i)};
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 var date=todayStr();
@@ -717,6 +729,34 @@ function flip(id){if(!db){st('The shared log is not available in this view. Open
 function saaN(){var n=0;shist.forEach(function(e){var a=e.after,b=e.before;if(a&&a.status==='Attended'&&(!b||b.status!=='Attended'||(b.guest||'')!==(a.guest||'')))n++});
  var cur=sseats.filter(function(d){return d.status==='Attended'}).length;return Math.max(n,cur)}
 function hourOf(ms){return new Date(ms).getHours()}
+function seq(a,b){var r=[];for(var i=a;i<=b;i++)r.push(i);return r}
+var PRI=seq(130,144).concat(seq(124,129),seq(145,150)),SEC=seq(97,102).concat(seq(70,75),seq(118,123),seq(91,96)),eseats={};
+document.querySelectorAll('svg g.seat').forEach(function(g){var t=g.querySelector('text');if(!t)return;var q=t.textContent.trim();if(/^\d+$/.test(q))eseats[+q]=g});
+function ranges(a){a=a.slice().sort(function(x,y){return x-y});var o=[],i=0;while(i<a.length){var j=i;while(j+1<a.length&&a[j+1]===a[j]+1)j++;o.push(a[i]===a[j]?''+a[i]:a[i]+'\u2013'+a[j]);i=j+1}return o.join(', ')}
+function eduGroups(){var m={};taps.forEach(function(t){if(t.kind!=='edu'||!t.grp)return;var g=m[t.grp]=m[t.grp]||{id:t.grp,n:0,seats:[],over:0,at:t.at,pool:t.pool||'p'};g.n+=t.n;g.seats=g.seats.concat(t.seats||[]);g.over+=t.over||0;if(t.at<g.at)g.at=t.at;if(t.pool)g.pool=t.pool});
+ return Object.keys(m).map(function(k){var g=m[k],e=egs[k]||{};g.out=e.out||0;return g}).sort(function(a,b){return a.at-b.at})}
+function eduPlan(n){var act=eduGroups().filter(function(g){return !g.out}),held={};act.forEach(function(g){g.seats.forEach(function(q){held[q]=1})});
+ var join=(n===1&&act.length)?act[act.length-1]:null,grp=join?join.id:'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),pool=join?join.pool:(act.some(function(g){return g.pool==='p'})?'s':'p');
+ var order=pool==='p'?PRI.concat(SEC):SEC,got=[];for(var i=0;i<order.length&&got.length<n;i++){if(!held[order[i]])got.push(order[i])}
+ return{grp:grp,pool:pool,seats:got,over:n-got.length}}
+function hm(ms){return new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
+function renderEdu(){var gs=eduGroups(),act=gs.filter(function(g){return !g.out}),left=gs.filter(function(g){return g.out}),mark={};
+ var all=gs;act.forEach(function(g){var c=(all.indexOf(g)%2)+1;g.seats.forEach(function(q){mark[q]=c})});
+ Object.keys(eseats).forEach(function(k){var g=eseats[k],m=mark[k]||0;g.classList.toggle('edu-g1',m===1);g.classList.toggle('edu-g2',m===2)});
+ var box=$('vis-edug');if(!box)return;box.textContent='';
+ var h=document.createElement('h3');h.textContent='Education groups in the gallery';box.appendChild(h);
+ function el(tag,txt,cls){var e=document.createElement(tag);if(txt!=null)e.textContent=txt;if(cls)e.className=cls;return e}
+ if(!gs.length){box.appendChild(el('p','No education group has arrived yet. Tap a group size under Education and its seats are marked on the plan.','sum'));return}
+ act.forEach(function(g,i){var r=el('div',null,'gr'),sw=el('span','','sw');sw.style.background=(gs.indexOf(g)%2)?'#7a3fa0':'#12808a';
+  var t=el('span',null);t.appendChild(sw);t.appendChild(document.createTextNode('Group '+(gs.indexOf(g)+1)+': '+g.n+' visitors, in at '+hm(g.at)+(g.seats.length?', seats '+ranges(g.seats):'')));r.appendChild(t);
+  if(g.over>0)r.appendChild(el('span',g.over+' not in marked seats: seat by eye','w'));
+  var b=el('button','Group left','sm');b.type='button';b.addEventListener('click',function(){if(!db)return;db.doc('public-visits/'+date+'/edugroups/'+g.id).set({out:Date.now(),by:myId}).catch(function(x){st('Not saved ('+(x&&x.code||'error')+').')})});r.appendChild(b);box.appendChild(r)});
+ if(!act.length)box.appendChild(el('p','No education group is in the gallery now.','sum'));
+ if(left.length){var mins=left.map(function(g){return Math.max(0,Math.round((g.out-g.at)/60000))}),avg=Math.round(mins.reduce(function(a,b){return a+b},0)/mins.length);
+  box.appendChild(el('p','Left today: '+left.length+(left.length===1?' group':' groups')+', average stay '+avg+' minutes.','sum'));
+  left.forEach(function(g){var r=el('div',null,'gr');r.appendChild(el('span','Group '+(gs.indexOf(g)+1)+': '+g.n+' visitors, '+hm(g.at)+' to '+hm(g.out)+' ('+Math.max(0,Math.round((g.out-g.at)/60000))+' min)'));
+   box.appendChild(r)})}
+}
 function render(){
  var dom=0,ovs=0,edu=0,grp=0,by={},oAm=0,oPm=0,eAm=0;taps.forEach(function(t){var h=hourOf(t.at),n=t.n||1;if(t.kind==='edu'){if(h<15)eAm+=n}else{if(h<15)oAm+=n;else oPm+=n}by[h]=by[h]||{d:0,o:0,e:0};if(t.kind==='ovs'){ovs+=n;by[h].o+=n}else if(t.kind==='edu'){edu+=n;grp++;by[h].e+=n}else{dom+=n;by[h].d+=n}});
  var accN=Object.keys(accs).length,tot=dom+ovs+edu+avis.length+saaN();(function(){var free=5-accN,full=accN>=5;$('vis-accn').textContent=free;document.querySelectorAll('.accbn').forEach(function(b){b.textContent=full?'NO ACCESSIBLE SPACES FREE. All 5 are taken. Do not issue tickets to guests with accessibility needs until a space is freed.':'Accessible spaces free: '+free+' of 5 (Acc1\u2013Acc5).';b.style.background=full?'#c8102e':'#f3ead0';b.style.color=full?'#ffffff':'#1c1a16';b.style.borderColor=full?'#7a0a1c':'#9c7a2e'})})();
@@ -734,6 +774,7 @@ function render(){
  var tb=$('vis-rows');tb.textContent='';
  hs.forEach(function(h){var tr=document.createElement('tr');if(h===pk)tr.className='peak';[hh(h),by[h].d,by[h].o,by[h].e,by[h].d+by[h].o+by[h].e].forEach(function(v){var c=document.createElement('td');c.textContent=v;tr.appendChild(c)});tb.appendChild(tr)});
  if(!hs.length){var tr=document.createElement('tr'),c=document.createElement('td');c.colSpan=5;c.textContent='No tickets counted yet for this sitting.';tr.appendChild(c);tb.appendChild(tr)}
+ renderEdu();
  Object.keys(seats).forEach(function(id){var g=seats[id],on=!!accs[id];g.classList.toggle('vis-on',on);g._ico.forEach(function(e){e.classList.toggle('vis-ico',on)});g._t.forEach(function(e){e.style.display=on?'':'none'});g.setAttribute('aria-label','Accessible seat '+id+(on?', occupied. Select to mark free.':', free. Select to mark occupied.'))});
 }
 function rule(){var now=new Date(),isToday=date===todayStr(),open=isToday&&now.getHours()>=15;
@@ -759,14 +800,18 @@ function xsave(name,sheets){
  var out=XLSX.write(wb,{bookType:'xlsx',type:'array'});
  dl.save({filename:name,data:new Uint8Array(out)}).catch(function(){})}
 function save(name,rows){xsave(name,[[/history/.test(name)?'History':'Ticket log',rows]])}
-function tap(kind,n){if(!db){st('Counting needs the shared log, which is not available in this view. Open the page signed in with edit access.');return}
- db.collection('public-visits/'+date+'/taps').add({kind:kind,n:n||1,by:myId,at:Date.now()}).catch(function(x){st('Not counted ('+(x&&x.code||'error')+'). Check your connection and tap again.')})}
+function tap(kind,n,extra){if(!db){st('Counting needs the shared log, which is not available in this view. Open the page signed in with edit access.');return}
+ var rec={kind:kind,n:n||1,by:myId,at:Date.now()};if(extra)Object.keys(extra).forEach(function(k){rec[k]=extra[k]});
+ db.collection('public-visits/'+date+'/taps').add(rec).catch(function(x){st('Not counted ('+(x&&x.code||'error')+'). Check your connection and tap again.')})}
 var curKind='dom',NAME={dom:'Domestic',ovs:'Overseas',edu:'Education'};
 function toast(m){var t=$('vis-toast');t.textContent=m;clearTimeout(toast._h);toast._h=setTimeout(function(){t.textContent=''},2500)}
 function add(kind,n){
  if(!db){tap(kind,n);return}
- if(kind==='edu'){var late=date===todayStr()&&new Date().getHours()>=15;if(n>27||late){keep=Date.now()+8000;st(n>27?'That group is larger than the 27 education seats (124\u2013150). It has been added; check where the rest will sit.':'It is after 3pm, when seats 124\u2013150 are open to all. The group has been added.')}else st('')}
- else st('');
+ if(kind==='edu'){var plan=eduPlan(n),late=date===todayStr()&&new Date().getHours()>=15,msg='';
+  if(plan.over>0){keep=Date.now()+9000;msg=plan.seats.length+' of '+n+' marked on the plan. '+plan.over+' more than the marked seats allow: seat them by eye.'}
+  if(late){keep=Date.now()+9000;msg=(msg?msg+' ':'')+'It is after 3pm, when seats 124\u2013150 are open to all.'}
+  st(msg);tap('edu',n,{grp:plan.grp,pool:plan.pool,seats:plan.seats,over:plan.over});toast('Added '+n+' Education'+(plan.seats.length?': seats '+ranges(plan.seats):''));return}
+ st('');
  tap(kind,n);toast('Added '+n+' '+NAME[kind])}
 ['dom','ovs','edu'].forEach(function(k){$('vis-'+k).addEventListener('click',function(){add(k,1)})});
 document.querySelectorAll('#vis .quick').forEach(function(g){var k=g.getAttribute('data-k');g.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){
@@ -782,8 +827,9 @@ function addHc(){if(!db){st('Counting needs the shared log, which is not availab
  st('');db.collection('public-visits/'+date+'/counts').add({n:n,by:myId,at:Date.now()}).then(function(){$('vis-hcn').value='';toast('Headcount recorded: '+n)}).catch(function(x){st('Not recorded ('+(x&&x.code||'error')+'). Check your connection and try again.')})}
 $('vis-hca').addEventListener('click',addHc);$('vis-hcn').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addHc()}});
 $('vis-hcu').addEventListener('click',function(){if(!db||!hcs.length)return;var last=hcs.slice().sort(function(a,b){return b.at-a.at})[0];db.doc('public-visits/'+date+'/counts/'+last.id).delete().catch(function(x){st('Not undone ('+(x&&x.code||'error')+').')})});
-function sub(){if(unsubSH){unsubSH();unsubSH=null}if(unsubSS){unsubSS();unsubSS=null}shist=[];sseats=[];if(unsubAV){unsubAV();unsubAV=null}avis=[];if(unsubH){unsubH();unsubH=null}hcs=[];if(unsubT){unsubT();unsubT=null}if(unsubA){unsubA();unsubA=null}taps=[];accs={};render();if(!db)return;
- unsubT=db.collection('public-visits/'+date+'/taps').onSnapshot(function(s){taps=s.docs.map(function(x){var v=x.data()||{};return{id:x.id,kind:v.kind,n:+v.n||1,at:v.at||0}}).filter(function(t){return t.at});if(Date.now()>keep)st('');render()},function(e){st('The tally could not be read ('+(e&&e.code||'error')+'). Check that you have been given access.')});
+function sub(){if(unsubSH){unsubSH();unsubSH=null}if(unsubSS){unsubSS();unsubSS=null}shist=[];sseats=[];if(unsubAV){unsubAV();unsubAV=null}avis=[];if(unsubH){unsubH();unsubH=null}hcs=[];if(unsubT){unsubT();unsubT=null}if(unsubA){unsubA();unsubA=null}if(unsubEG){unsubEG();unsubEG=null}taps=[];accs={};egs={};render();if(!db)return;
+ unsubEG=db.collection('public-visits/'+date+'/edugroups').onSnapshot(function(s){egs={};s.docs.forEach(function(x){egs[x.id]=x.data()||{}});render()},function(){});
+ unsubT=db.collection('public-visits/'+date+'/taps').onSnapshot(function(s){taps=s.docs.map(function(x){var v=x.data()||{};return{id:x.id,kind:v.kind,n:+v.n||1,at:v.at||0,grp:v.grp||'',pool:v.pool||'',seats:v.seats||[],over:+v.over||0}}).filter(function(t){return t.at});if(Date.now()>keep)st('');render()},function(e){st('The tally could not be read ('+(e&&e.code||'error')+'). Check that you have been given access.')});
  unsubH=db.collection('public-visits/'+date+'/counts').onSnapshot(function(s){hcs=s.docs.map(function(x){var v=x.data()||{};return{id:x.id,n:+v.n||0,at:v.at||0}}).filter(function(c){return c.at});render()},function(){});
  unsubA=db.collection('public-acc/'+date+'/seats').onSnapshot(function(s){var m={};s.docs.forEach(function(x){m[x.id]=(x.data()||{}).visit||1});accs=m;render()},function(){});
  unsubSH=db.collection('public-saa-history/'+date+'/events').onSnapshot(function(s){shist=s.docs.map(function(x){return x.data()||{}});render()},function(){});
@@ -801,9 +847,10 @@ $('vis-csv').addEventListener('click',function(){
  tot.push([date,'Peak headcount (people in the gallery)',hpk.n,'']);tot.push([date,'Peak capacity today (% of 150 seats)',Math.round(100*hpk.n/150),'']);tot.push([date,'Peak headcount time',hpk.at?new Date(hpk.at).toISOString():'','']);tot.push([date,'Latest headcount',hlast?hlast.n:'','']);
  var acr=[['Sitting date','Space','In','Out','Minutes']].concat(avis.slice().sort(function(a,b){return a.at-b.at}).map(function(v){return [date,v.seat,new Date(v.at).toISOString(),v.out?new Date(v.out).toISOString():'',Math.max(0,Math.round(((v.out||Date.now())-v.at)/60000))]}));
  var hcr=[['Sitting date','Date and time','People in the gallery','Percent of 150 seats']].concat(hsr.map(function(c){return [date,new Date(c.at).toISOString(),c.n,Math.round(100*c.n/150)]}));
- xsave('public-visitors-'+date+'.xlsx',[['Totals',tot],['Taps',rows],['By hour',sum],['Headcounts',hcr],['Accessible spaces',acr]])});
+ var egr=[['Sitting date','Group','Visitors','Seats marked','In','Out','Minutes','Not in marked seats']].concat(eduGroups().map(function(g,i){return [date,'Group '+(i+1),g.n,ranges(g.seats),new Date(g.at).toISOString(),g.out?new Date(g.out).toISOString():'',g.out?Math.max(0,Math.round((g.out-g.at)/60000)):'',g.over]}));
+ xsave('public-visitors-'+date+'.xlsx',[['Totals',tot],['Taps',rows],['By hour',sum],['Headcounts',hcr],['Accessible spaces',acr],['Education groups',egr]])});
 render();
-Promise.all([claude.use('db'),claude.use('user'),claude.use('downloads')]).then(function(r){db=r[0];usr=r[1];dl=r[2];
+Promise.all([house.use('db'),house.use('user'),house.use('downloads')]).then(function(r){db=r[0];usr=r[1];dl=r[2];
  if(!db){st('The shared log is not available in this view, so taps cannot be counted. Open the page signed in with edit access.');return}
  (usr&&usr.id?usr.id():Promise.resolve('')).then(function(i){myId=i||''}).catch(function(){}).then(sub)}).catch(function(){st('The shared log could not be loaded.')});
 })();
@@ -1014,7 +1061,7 @@ $('aoo-all').addEventListener('click',function(){var b=$('aoo-all'),ids=Object.k
 });
 setInterval(function(){if(!picked&&todayStr()!==date){date=todayStr();$('aoo-date').value=date;closeDlg();sub()}},30000);
 render();
-Promise.all([claude.use('db'),claude.use('user'),claude.use('downloads')]).then(function(r){
+Promise.all([house.use('db'),house.use('user'),house.use('downloads')]).then(function(r){
  db=r[0];usr=r[1];dl=r[2];
  if(!db){st('The shared log is not available in this view, so seats cannot be assigned. Open the page signed in with edit access.');render();return}
  (usr&&usr.id?usr.id():Promise.resolve('')).then(function(i){myId=i||''}).catch(function(){}).then(function(){subLists();sub()});
